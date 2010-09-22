@@ -1,4 +1,3 @@
-# TODO: Fix make system so PLD flags will be used
 # TODO: Make it install
 Summary:	DomainKeys Identified Mail service provider
 # Summary(pl.UTF-8):	-
@@ -24,16 +23,31 @@ can be used to build DKIM-compliant applications or MTAs
 %prep
 %setup -q
 
+cat > devtools/Site/site.config.m4 <<'EOF'
+define(`confMANROOT', `%{_mandir}/man')
+define(`confUBINDIR', `%{_sbindir}')
+define(`confCCOPTS', `%{optflags}')
+EOF
+
+
 %build
 #%%configure
-#%%{__make}
 %{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
+install -p -m 644 -D dkim-filter/dkim-filter.conf.sample $RPM_BUILD_ROOT%{_sysconfdir}/mail/%{name}/dkim-filter.conf
+
+install -p -d $RPM_BUILD_ROOT%{_mandir}/man{3,5,8}
+install -p -d $RPM_BUILD_ROOT%{_sbindir}
+install -p -d $RPM_BUILD_ROOT%{_includedir}
+
+
 %{__make} install \
-	DESTDIR=$RPM_BUILD_ROOT
+	DESTDIR=$RPM_BUILD_ROOT \
+	{UBIN,MAN}OWN=$(whoami) {UBIN,MAN}GRP=$(id -ng) UBINMODE=755 MANMODE=644
+
 
 %clean
 rm -rf $RPM_BUILD_ROOT
