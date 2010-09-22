@@ -4,7 +4,7 @@ Summary:	DomainKeys Identified Mail service provider
 # Summary(pl.UTF-8):	-
 Name:		dkim-milter
 Version:	2.8.3
-Release:	0.2
+Release:	0.3
 License:	Sendmail Open Source License
 Group:		Applications
 Source0:	http://downloads.sourceforge.net/project/dkim-milter/DKIM%20Milter/%{version}/%{name}-%{version}.tar.gz
@@ -60,4 +60,5 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/ar.3*
 %{_mandir}/man5/*
 %{_mandir}/man8/*
+%dir /etc/mail/dkim-milter
 /etc/mail/dkim-milter/dkim-filter.conf
