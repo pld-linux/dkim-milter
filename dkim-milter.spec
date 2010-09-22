@@ -1,15 +1,16 @@
-# TODO: Make it install
+# TODO: Init script
+# TODO: Devel package 
 Summary:	DomainKeys Identified Mail service provider
 # Summary(pl.UTF-8):	-
 Name:		dkim-milter
 Version:	2.8.3
-Release:	0.1
+Release:	0.2
 License:	Sendmail Open Source License
 Group:		Applications
 Source0:	http://downloads.sourceforge.net/project/dkim-milter/DKIM%20Milter/%{version}/%{name}-%{version}.tar.gz
 # Source0-md5:	d2043c269f1720cc095a9b4f163cf3df
 URL:		http://www.sendmail.com/sm/wp/dkim/
-# BuildRequires:	-
+BuildRequires:	libmilter-devel
 # Requires:	-
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -54,5 +55,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc AUTHORS CREDITS ChangeLog NEWS README THANKS TODO
-%attr(755,root,root) %{_bindir}/*
+# %doc AUTHORS CREDITS ChangeLog NEWS README THANKS TODO
+%attr(755,root,root) %{_sbindir}/*
+%{_mandir}/man3/ar.3*
+%{_mandir}/man5/*
+%{_mandir}/man8/*
+/etc/mail/dkim-milter/dkim-filter.conf
