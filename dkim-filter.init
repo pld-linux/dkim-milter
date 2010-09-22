@@ -1,0 +1,83 @@
+#!/bin/sh
+#
+# dkim-filter	This shell script takes care of starting and stopping
+#		dkim-filter.
+#
+# chkconfig:	345 80 20
+#
+# description:	DKIM filter for postfix
+
+
+# Source function library
+. /etc/rc.d/init.d/functions
+
+# Get network config
+# . /etc/sysconfig/network
+
+# Get service config
+# [ -f /etc/sysconfig/postfix ] && . /etc/sysconfig/postfix
+
+start() {    
+    # Check if the service is already running?
+    if [ -f /var/lock/subsys/dkim-filter ]; then
+	msg_already_running "DKIM filter"
+	return
+    fi
+
+    msg_starting "DKIM filter"
+    busy
+    # _daemon_set_ulimits
+
+    # daemon /usr/sbin/wicd
+    # /usr/sbin/dkim-filter  -x /etc/mail/dkim-milter/dkim-filter.conf -f 
+    # msg=$(nice -n ${SERVICE_RUN_NICE_LEVEL:-${DEFAULT_SERVICE_RUN_NICE_LEVEL:-0}} /usr/sbin/postfix start 2>&1)
+    local msg
+    msg=$(/usr/sbin/dkim-filter  -x /etc/mail/dkim-milter/dkim-filter.conf)
+    RETVAL=$?
+ 
+
+	if [ $RETVAL -eq 0 ]; then
+		ok
+		touch /var/lock/subsys/dkim-filter
+	else
+		fail
+		echo >&2 "$msg"
+	fi
+
+}
+
+stop() {
+    if [ ! -f /var/lock/subsys/dkim-filter ]; then
+	msg_not_running "DKIM filter"
+	return
+	fi
+
+    # Stop daemons.
+    msg_stopping "DKIM filter"
+    killproc --pidfile /var/run/dkim-filter/dkim-filter.pid  dkim-filter -TERM
+    rm -f /var/lock/subsys/dkim-filter
+}
+
+
+
+
+
+RETVAL=0
+# See how we were called.
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+  	stop
+	;;
+  status)
+	status dkim-filter
+	exit $?
+	;;
+  *)
+	msg_usage "$0 {start|stop|restart|status}"
+	exit 3
+esac
+
+exit $RETVAL
