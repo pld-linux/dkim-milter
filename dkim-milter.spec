@@ -10,6 +10,8 @@ Source0:	http://downloads.sourceforge.net/dkim-milter/%{name}-%{version}.tar.gz
 # Source0-md5:	d2043c269f1720cc095a9b4f163cf3df
 URL:		http://www.dkim.org/
 BuildRequires:	libmilter-devel
+# postfix or sendmail have milter support
+Requires:	/usr/lib/sendmail
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
